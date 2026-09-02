@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow border-0 mt-5">
+            <div class="card-header bg-success text-white text-center py-3">
+                <h4 class="mb-0">Welcome Back</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                                {{ field.label }}
+                            </label>
+                            
+                            {% if field.errors %}
+                                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="form-control is-invalid" id="{{ field.id_for_label }}">
+                                <div class="invalid-feedback">
+                                    {{ field.errors|striptags }}
+                                </div>
+                            {% else %}
+                                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-success w-100 py-2 mt-3 fw-bold">Login</button>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-center py-3">
+                Don't have an account? <a href="{% url 'signup' %}" class="text-decoration-none text-success">Sign up here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">My Orders</h2>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Order ID</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td class="ps-4 fw-bold">#{{ order.id }}</td>
+                            <td>{{ order.created_at|date:"d M Y, h:i A" }}</td>
+                            <td class="fw-bold text-primary">₹ {{ order.total_amount }}</td>
+                            <td>
+                                {% if order.is_paid %}
+                                    <span class="badge bg-success">Paid</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <!-- Naya View Details Button -->
+                                <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-primary">View Details</a>
+                                <!-- Purana Invoice Button -->
+                                <a href="{% url 'invoice' order.id %}" target="_blank" class="btn btn-sm btn-outline-secondary ms-1">Invoice</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <h5 class="text-muted">No Orders Found</h5>
+                                <a href="{% url 'home' %}" class="btn btn-primary mt-2">Start Shopping</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- NAYA CODE: Pagination UI -->
+            {% if orders.has_other_pages %}
+            <div class="card-footer bg-white py-3 border-top-0">
+                <nav aria-label="Order pagination">
+                    <ul class="pagination justify-content-center mb-0">
+                        
+                        <!-- Previous Button -->
+                        {% if orders.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ orders.previous_page_number }}">Previous</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        {% endif %}
+
+                        <!-- Page Numbers (1, 2, 3...) -->
+                        {% for num in orders.paginator.page_range %}
+                            {% if orders.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Next Button -->
+                        {% if orders.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ orders.next_page_number }}">Next</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        {% endif %}
+
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+<!-- NAYA CODE KHATAM -->
+        </div>
+    </div>
+</div>
+{% endblock %}

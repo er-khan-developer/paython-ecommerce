@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Checkout Details</h2>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Billing & Shipping Address</h5>
+                <form method="POST" id="checkout-form">
+                    {% csrf_token %}
+                    
+                    <!-- Agar purane addresses hain toh unhe dikhayein -->
+                    {% if addresses %}
+                        <h6 class="mb-3 text-primary">Select Delivery Address</h6>
+                        {% for addr in addresses %}
+                        <div class="form-check border p-3 rounded mb-2 shadow-sm">
+                            <!-- Pehla address default checked rakhein -->
+                            <input class="form-check-input" type="radio" name="selected_address" value="{{ addr.id }}" id="addr_{{ addr.id }}" {% if forloop.first %}checked{% endif %}>
+                            <label class="form-check-label w-100" for="addr_{{ addr.id }}">
+                                <strong>{{ addr.biller_name }}</strong> ({{ addr.mobile_number }})<br>
+                                {{ addr.address_line }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}
+                            </label>
+                        </div>
+                        {% endfor %}
+
+                        <!-- Naya address daalne ka option -->
+                        <div class="form-check border p-3 rounded mb-4 bg-light">
+                            <input class="form-check-input" type="radio" name="selected_address" value="new" id="addr_new">
+                            <label class="form-check-label fw-bold" for="addr_new">
+                                Add a New Address
+                            </label>
+                        </div>
+                    {% else %}
+                        <!-- Agar pehli baar order kar raha hai -->
+                        <input type="hidden" name="selected_address" value="new">
+                    {% endif %}
+
+                    <!-- Naye address ka Form (Isme required hataya hai taaki purana select karne pe error na aaye) -->
+                    <div id="new-address-form" class="mt-3 p-3 border rounded mb-4" {% if addresses %}style="display: none;"{% endif %}>
+                        <h6 class="mb-3">Enter New Address Details</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Biller Name</label>
+                                <input type="text" name="biller_name" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Mobile Number</label>
+                                <input type="text" name="mobile_number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address Line</label>
+                            <input type="text" name="address_line" class="form-control">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" name="city" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">State</label>
+                                <input type="text" name="state" class="form-control">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Pincode</label>
+                                <input type="text" name="pincode" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold fs-5">Proceed to Payment</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Order Summary</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for item in cart.items.all %}
+                    <li class="list-group-item d-flex justify-content-between lh-sm px-0">
+                        <div>
+                            <h6 class="my-0">{{ item.product.name }}</h6>
+                            <small class="text-muted">Qty: {{ item.quantity }}</small>
+                        </div>
+                        <span class="text-muted">₹ {{ item.get_total_price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Total (INR)</span>
+                    <span>₹ {{ total_amount }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Naya address select karne par form dikhane ke liye JS -->
+<script>
+    document.querySelectorAll('input[name="selected_address"]').forEach((elem) => {
+        elem.addEventListener("change", function(event) {
+            var formDiv = document.getElementById("new-address-form");
+            var inputs = formDiv.querySelectorAll('input');
+            if (event.target.value === "new") {
+                formDiv.style.display = "block";
+                inputs.forEach(input => input.setAttribute('required', 'required'));
+            } else {
+                formDiv.style.display = "none";
+                inputs.forEach(input => input.removeAttribute('required'));
+            }
+        });
+    });
+</script>
+{% endblock %}

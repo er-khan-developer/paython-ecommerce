@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 text-center">
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-white py-3">
+                <h4 class="mb-0">Setup 2-Factor Authentication</h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted">1. Google Authenticator app open karein aur is QR Code ko scan karein:</p>
+                
+                <!-- QR Code Image -->
+                <div class="my-3">
+                    <img src="data:image/png;base64,{{ qr_code }}" alt="2FA QR Code" class="img-thumbnail" width="220">
+                </div>
+                
+                <hr>
+                
+                <p class="text-muted mt-3">2. Scan karne ke baad app me jo 6-digit code aaye, use yahan daalein:</p>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Enable 2FA Form -->
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3 px-4">
+                        <input type="text" name="otp" class="form-control text-center fs-5" 
+                               placeholder="Enter 6-digit code" maxlength="6" required autocomplete="off">
+                        <button class="btn btn-success fw-bold px-4" type="submit">Enable 2FA</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
