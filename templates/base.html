@@ -1,9 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My E-Commerce</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/catalog.css' %}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -26,6 +29,9 @@
                     </form>
                     
                 {% else %}
+                    <a href="{% url 'cart' %}" class="btn btn-outline-warning btn-sm me-2">
+                        Cart <span class="badge bg-danger rounded-pill" id="nav-cart-count">{{ cart_count }}</span>
+                    </a>
                     <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Login</a>
                     <a href="{% url 'signup' %}" class="btn btn-primary btn-sm">Sign Up</a>
                 {% endif %}
@@ -38,5 +44,6 @@
     </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </html>

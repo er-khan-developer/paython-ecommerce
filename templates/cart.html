@@ -5,7 +5,7 @@
 {% block content %}
 <h2 class="mb-4">Shopping Cart</h2>
 
-{% if cart.items.all %}
+{% if items %}
 <div class="row">
     <div class="col-md-8">
         <table class="table table-bordered bg-white shadow-sm align-middle">
@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for item in cart.items.all %}
+                {% for item in items %}
                 <tr id="item-row-{{ item.id }}">
                     <td>{{ item.product.name }}</td>
                     <td>₹ {{ item.product.price }}</td>
@@ -30,7 +30,7 @@
                             <button class="btn btn-sm btn-outline-secondary ms-2" onclick="updateCart({{ item.id }}, 'increase')">+</button>
                         </div>
                     </td>
-                    <td id="item-total-{{ item.id }}">₹ {{ item.get_total_price }}</td>
+                    <td id="item-total-{{ item.id }}">₹ {{ item.total_price }}</td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-danger" onclick="updateCart({{ item.id }}, 'remove')">X</button>
                     </td>

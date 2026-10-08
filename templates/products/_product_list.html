@@ -1,0 +1,33 @@
+{% if products %}
+    {% for product in products %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <span class="badge bg-light text-dark mb-2">
+                        {{ product.category.name|default:'General' }}
+                    </span>
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <h6 class="text-success fw-bold">₹ {{ product.price }}</h6>
+                    <p class="card-text text-muted">{{ product.description|truncatewords:10 }}</p>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <div class="d-flex gap-2">
+                        <button onclick="addProductToCart({{ product.id }}, this)" class="btn btn-warning w-50 fw-bold fw-sm">
+                            Add to Cart
+                        </button>
+                        <a href="{% url 'buy_now' product.id %}" class="btn btn-success w-50 fw-bold fw-sm">
+                            Buy Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="col-12 text-center text-muted">
+        <h4>No products found for this category.</h4>
+    </div>
+{% endif %}

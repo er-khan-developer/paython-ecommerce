@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('products/filter/', views.product_filter, name='product_filter'),
     path('signup/', views.signup, name='signup'),
     # Django ke in-built login/logout views use kar rahe hain
     path('login/', views.login_view, name='login'),
